@@ -45,13 +45,13 @@ templateReferences = ['D201', 'D202', 'D203', 'Q201', 'Q202', 'P201', 'R201', 'R
 
 #The .kicad-pcb board with a ready layout for the area to be cloned.
 #The cloned area must be surrounded by a (square) zone in the comment layer.
-inputBoard = './boosterilevy/16x_boosteri.kicad_pcb'
+inputBoard = './boosterilevy2/16x_boosteri.kicad_pcb'
 #Output file, original file remains unmodified
-outputBoardFile = './boosterilevy/skriptioutput.kicad_pcb'
+outputBoardFile = './boosterilevy2/skriptioutput.kicad_pcb'
 
 templateRefModulo = 100;	#Difference in the reference numbers between hierarchical sheet
 templateRefStart = 200;		#Starting point of numbering in the first hierarchical sheet
-move_dx = FromMM(11)		#Spacing between clones in x direction
+move_dx = FromMM(110)		#Spacing between clones in x direction
 move_dy = FromMM(11)		#Spacing between clones in y direction
 clonesX = 4			#Number of clones in x direction
 clonesY = 4			#Number of clones in y direction
@@ -74,12 +74,15 @@ for templateRef in templateReferences:							#For each module in the template sc
 
         for counter, cloneRef in enumerate(cloneReferences):				#Move each of the clones to appropriate location
             templatePosition = templateModule.GetPosition()
-            cloneModule = board.FindModuleByReference(cloneRef)				#Error handling missing...
-            if cloneModule.GetLayer() is not templateModule.GetLayer():			#If the cloned module is not on the same layer as the template
-                cloneModule.Flip(wxPoint(1,1))						#Flip it around any point to change the layer
-            vect = wxPoint(templatePosition.x+(counter+1)%clonesX*move_dx, templatePosition.y+(counter+1)//clonesX*move_dy) #Calculate new position
-            cloneModule.SetPosition(vect)						#Set position
-            cloneModule.SetOrientation(templateModule.GetOrientation())			#And copy orientation from template
+            cloneModule = board.FindModuleByReference(cloneRef)				
+            if cloneModule is not None:
+                if cloneModule.GetLayer() is not templateModule.GetLayer():			#If the cloned module is not on the same layer as the template
+                    cloneModule.Flip(wxPoint(1,1))						#Flip it around any point to change the layer
+                vect = wxPoint(templatePosition.x+(counter+1)%clonesX*move_dx, templatePosition.y+(counter+1)//clonesX*move_dy) #Calculate new position
+                cloneModule.SetPosition(vect)						#Set position
+                cloneModule.SetOrientation(templateModule.GetOrientation())			#And copy orientation from template
+            else:
+                print 'Module to be moved (', cloneRef, ') is not found in the board.'
     else:
         print 'Module ', templateRef, ' was not found in the template board'
 print 'Modules moved and oriented according to template.'
@@ -95,6 +98,7 @@ for i in range(0, board.GetAreaCount()):
 
 modules = board.GetModules()
 #Then iterate through all the other zones and copy them
+print 'Iterating through all the pads for each cloned zone, might take a few seconds...'
 for i in range(0, board.GetAreaCount()):						#For all the zones in the template board
     zone = board.GetArea(i)
     #print 'Original zone location', zone.GetPosition()
