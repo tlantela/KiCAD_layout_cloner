@@ -41,17 +41,17 @@ from pcbnew import *
 #You can copy the schema parsing with kipy for example from klonor-kicad if you have enough components to justify it
 #schemaTemplate = './boosterilevy/booster.sch'
 #Instead the components to be cloned are currently given manually
-templateReferences = ['D201', 'D202', 'D203', 'Q201', 'Q202', 'P201', 'R201', 'R202', 'C201']
+templateReferences = ['D201', 'D202', 'D203', 'Q201', 'Q202', 'P201', 'R201', 'R202', 'R203', 'R204', 'C201']
 
 #The .kicad-pcb board with a ready layout for the area to be cloned.
 #The cloned area must be surrounded by a (square) zone in the comment layer.
-inputBoard = './boosterilevy2/16x_boosteri.kicad_pcb'
+inputBoard = './boosterilevy/16x_boosteri.kicad_pcb'
 #Output file, original file remains unmodified
-outputBoardFile = './boosterilevy2/skriptioutput.kicad_pcb'
+outputBoardFile = './boosterilevy/skriptioutput.kicad_pcb'
 
 templateRefModulo = 100;	#Difference in the reference numbers between hierarchical sheet
 templateRefStart = 200;		#Starting point of numbering in the first hierarchical sheet
-move_dx = FromMM(110)		#Spacing between clones in x direction
+move_dx = FromMM(11)		#Spacing between clones in x direction
 move_dy = FromMM(11)		#Spacing between clones in y direction
 clonesX = 4			#Number of clones in x direction
 clonesY = 4			#Number of clones in y direction
@@ -103,13 +103,13 @@ for i in range(0, board.GetAreaCount()):						#For all the zones in the template
     zone = board.GetArea(i)
     #print 'Original zone location', zone.GetPosition()
             
-    if templateRect.Contains(zone.GetPosition()) and zone.GetLayer() is not 41:		#If the zone is inside the area to be cloned
-        for i in range(1, numberOfClones):						#For each clone areas
-            zoneClone = zone.Duplicate()						#Make copy of the zone
-            zoneClone.Move(wxPoint(i%clonesX*move_dx, i//clonesX*move_dy))		#Move it inside the clone area
-            for module in modules:								#Iterate through all pads in the board...
+    if templateRect.Contains(zone.GetPosition()) and zone.GetLayer() is not 41:		#If the zone is inside the area to be cloned (the comment zone) and it is not the comment zone (layer 41)
+        for i in range(1, numberOfClones):						#For each target clone areas
+            zoneClone = zone.Duplicate()						#Make copy of the zone to be cloned
+            zoneClone.Move(wxPoint(i%clonesX*move_dx, i//clonesX*move_dy))		#Move it inside the target clone area
+            for module in modules:								#Iterate through all the pads (also the cloned ones) in the board...
                 for pad in module.Pads():
-                    if zoneClone.HitTestInsideZone(pad.GetPosition()):		#To find the (last) one inside the cloned zone
+                    if zoneClone.HitTestInsideZone(pad.GetPosition()) and pad.IsOnLayer(zoneClone.GetLayer()):		#To find the (last) one inside the cloned zone. pad.GetZoneConnection() could also be used
                         zoneClone.SetNetCode(pad.GetNet().GetNet())			#And set the (maybe) correct net for the zone
             board.Add(zoneClone)								#Add to the zone board
 print 'Zones cloned.'
