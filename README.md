@@ -26,14 +26,14 @@ python pcbnew_cloner.py
 Your system Python probably doesn't have dependency `pcbnew`. Easiest to use KiCad's bundled Python, PyAlaMode.
 
 Edit `layout_cloner.py` again to make the paths absolute:
-```python
+```
 inputBoardFile = r'C:\REPLACE_WITH_PATH_TO_YOUR\EXAMPLE_NAME.kicad_pcb'
 outputBoardFile = r'C:\REPLACE_WITH_PATH_TO_YOUR\EXAMPLE_NAME_cloned.kicad_pcb'
 ```
 
 In Pcbnew, go to Tools > Scripting Console. Paste this command and press Enter.
 
-```python
+```
 execfile(r'C:\REPLACE_WITH_PATH_TO_YOUR\layout_cloner.py')
 ```
 
