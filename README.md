@@ -6,7 +6,7 @@ Clone part of a layout in Pcbnew.
 ![Eeschema](docs/Eeschema.png)
 2. Import netlist into Pcbnew. Draw edge cuts. Place and route the components that will *not* be cloned. Also lay out the lowest-numbered subschema as a template. Surround it with a filled zone in Cmts.User layer (<span style="color:blue">blue box</span>). Tracks must be *completely inside* the zone.
 ![Pcbnew input](docs/Pcbnew-in.png)
-3. Save `EXAMPLE_NAME.kicad_pcb`. Edit your `layout_cloner.py` to match your circuit (instructions inside). Run it to produce `EXAMPLE_NAME_cloned.kicad_pcb` file. Open it in Pcbnew. The ratsnest may be wrong; toggle it off and on to fix.
+3. Save `EXAMPLE_NAME.kicad_pcb`. Edit your `layout_cloner.py` to match your circuit (instructions inside the file). Run it to produce `EXAMPLE_NAME_cloned.kicad_pcb` file. Open it in Pcbnew. The ratsnest may be wrong; toggle it off and on to fix.
 ![Pcbnew output](docs/Pcbnew-out.png)
 4. Clean up the edges of the patterned components. Try to keep this step as short as possible, because this work will be lost if/when you revisit Step 2.
 ![Pcbnew output cleaned](docs/Pcbnew-out-clean.png)
@@ -17,7 +17,7 @@ Clone part of a layout in Pcbnew.
 Open Terminal and run:
 
 ```bash
-python pcbnew_cloner.py
+python layout_cloner.py
 ```
 
 
